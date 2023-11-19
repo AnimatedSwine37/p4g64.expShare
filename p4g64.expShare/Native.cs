@@ -19,7 +19,7 @@ internal static unsafe class Native
     internal static CanPersonaLevelUpDelegate CanPersonaLevelUp;
     internal static HiddenLevelUpPartyMemberDelegate HiddenLevelUpPartyMember;
     internal static IsPartyMemberAvailableDelegate IsPartyMemberAvailable;
-    internal static GetProtagPersonaDelegate GetProtagPersona;
+    internal static PartyInfo** PartyInfoThing;
 
     internal static void Initialise(IReloadedHooks hooks)
     {
@@ -58,10 +58,10 @@ internal static unsafe class Native
             IsPartyMemberAvailable = hooks.CreateWrapper<IsPartyMemberAvailableDelegate>(address, out _);
         });
 
-        // TODO find for p4g
-        Utils.SigScan("40 53 48 83 EC 20 0F B7 D9 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 66 85 DB 78 ?? E8 ?? ?? ?? ?? 0F B7 D0 0F BF C3 39 D0 7C ?? 8B 15 ?? ?? ?? ?? 48 8D 0D ?? ?? ?? ?? FF C2 E8 ?? ?? ?? ?? 48 0F BF C3 48 6B C8 34 48 8D 05 ?? ?? ?? ?? 48 01 C8", "GetProtagPersona", address =>
+        Utils.SigScan("48 8B 15 ?? ?? ?? ?? 66 89 87 ?? ?? ?? ??", "PartyInfoPtr", address =>
         {
-            GetProtagPersona = hooks.CreateWrapper<GetProtagPersonaDelegate>(address, out _);
+            PartyInfoThing = (PartyInfo**)Utils.GetGlobalAddress(address + 3);
+            Utils.LogDebug($"Found PartyInfoThing at 0x{(nuint)PartyInfoThing:X}");
         });
     }
 
@@ -73,7 +73,6 @@ internal static unsafe class Native
     internal delegate nuint CanPersonaLevelUpDelegate(Persona* persona, nuint expGained, nuint param_3, nuint param_4);
     internal delegate void HiddenLevelUpPartyMemberDelegate(Persona* persona, PersonaChanges* personaStatChanges);
     internal delegate bool IsPartyMemberAvailableDelegate(PartyMember member);
-    internal delegate Persona* GetProtagPersonaDelegate(short slot);
 
     internal enum PartyMember : short
     {
@@ -112,8 +111,8 @@ internal static unsafe class Native
         [FieldOffset(0x21)]
         internal PersonaStats BonusStats;
 
-        [FieldOffset(0x83)]
-        byte unk; // just to make it 0x84 long
+        [FieldOffset(0x2F)]
+        byte unk; // just to make it 0x30 long
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -192,5 +191,15 @@ internal static unsafe class Native
     internal struct astruct_8
     {
 
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    internal struct PartyInfo
+    {
+        [FieldOffset(0xa30)]
+        internal short ActivePersonaSlot;
+
+        [FieldOffset(0xa34)]
+        internal Persona ProtagPersonas; // this is an array of 12
     }
 }
