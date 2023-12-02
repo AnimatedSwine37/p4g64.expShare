@@ -196,6 +196,9 @@ internal static unsafe class Native
     [StructLayout(LayoutKind.Explicit)]
     internal struct PartyInfo
     {
+        [FieldOffset(4)]
+        internal fixed short InParty[3];
+
         [FieldOffset(0xa30)]
         internal short ActivePersonaSlot;
 

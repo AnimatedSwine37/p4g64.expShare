@@ -14,6 +14,11 @@ public class Config : Configurable<Config>
     [DefaultValue(1.0)]
     public double PersonaExpMultiplier { get; set; } = 1.0;
 
+    [DisplayName("Downed Members Get Exp")]
+    [Description("If enabled, party members who are knocked out at the end of a battle will still gain exp.\nNote that this exp will be affected by the Inactive Party Exp Multiplier.")]
+    [DefaultValue(false)]
+    public bool GiveDownedExp { get; set; } = false;
+
     [DisplayName("Debug Mode")]
     [Description("Logs additional information to the console that is useful for debugging.")]
     [DefaultValue(false)]

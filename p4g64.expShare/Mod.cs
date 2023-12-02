@@ -236,6 +236,15 @@ public unsafe class Mod : ModBase // <= Do not Remove.
             if (results->PartyMembers[i] == (short)member) return false;
         }
 
+        if (!_configuration.GiveDownedExp)
+        {
+            // We don't want to give downed members exp so make sure check InParty (since they're removed from results)
+            for (int i = 0; i < 3; i++)
+            {
+                if ((*PartyInfoThing)->InParty[i] == (short)member) return false;
+            }
+        }
+
         return IsPartyMemberAvailable(member);
     }
 
