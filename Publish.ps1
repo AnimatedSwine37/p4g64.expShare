@@ -162,7 +162,7 @@ param (
     $UseScriptDirectory=$True,
 
     ## => User Config <= ## 
-    $ProjectPath = "p4g64.expShare.csproj",
+    $ProjectPath = "p4g64.expShare/p4g64.expShare.csproj",
     $PackageName = "p4g64.expShare",
     $PublishOutputDir = "Publish/ToUpload",
 
